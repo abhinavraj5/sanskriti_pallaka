@@ -8,11 +8,15 @@ const craftRoutes = require('./routes/craftRoutes');
 const tourRoutes = require('./routes/tourRoutes');
 const musicRoutes = require('./routes/musicRoutes');
 const recipeRoutes = require('./routes/recipeRoutes');
+const { optionalAuth } = require('./middleware/auth');
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// Optional auth: attaches req.user when Authorization header with valid token is present
+app.use(optionalAuth);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Sanskriti Paalaka API running' });

@@ -23,6 +23,9 @@ exports.register = async (req, res) => {
     try {
       const newUser = await User.create({ username, password, name, email });
       const token = generateToken(newUser._id);
+      // persist token on user for simple auth lookup
+      newUser.token = token;
+      await newUser.save();
       res.status(201).json({
         message: "Registration successful",
         token,
@@ -66,6 +69,8 @@ exports.login = async (req, res) => {
     }
 
     const token = generateToken(user._id);
+    user.token = token;
+    await user.save();
 
     res.json({
       message: "Login successful",

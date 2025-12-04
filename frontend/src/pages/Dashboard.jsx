@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FaUtensils, FaMusic, FaMapMarkedAlt, FaStore, FaPlus, FaChartLine } from 'react-icons/fa';
 import { recipesAPI, musicAPI, toursAPI, craftsAPI } from '../services/api';
@@ -121,6 +121,94 @@ const Dashboard = () => {
     }
   };
 
+  // Modal state for adding custom items
+  const [modalType, setModalType] = useState(null); // 'recipe'|'music'|'tour'|'craft' | null
+  const [modalForm, setModalForm] = useState({ title: '', description: '', extra: '' });
+  const [modalErr, setModalErr] = useState('');
+  const [modalLoading, setModalLoading] = useState(false);
+  const modalTitleRef = useRef(null);
+
+  useEffect(() => {
+    if (modalType && modalTitleRef.current) {
+      // small timeout to ensure element is mounted
+      setTimeout(() => modalTitleRef.current && modalTitleRef.current.focus(), 50);
+    }
+  }, [modalType]);
+
+  const openModal = (type) => {
+    setModalType(type);
+    setModalForm({ title: '', description: '', extra: '' });
+    setModalErr('');
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setModalForm({ title: '', description: '', extra: '' });
+    setModalErr('');
+  };
+
+  const handleModalChange = (e) => {
+    const { name, value } = e.target;
+    setModalForm(f => ({ ...f, [name]: value }));
+  };
+
+  const handleModalSubmit = async (e) => {
+    e.preventDefault();
+    setModalErr('');
+    if (!modalForm.title || !modalForm.description) {
+      setModalErr('Title and description are required');
+      return;
+    }
+    try {
+      setModalLoading(true);
+      // Auto-extract keywords from title + description + extra field
+      const textForExtraction = [modalForm.title, modalForm.description, modalForm.extra].filter(Boolean).join(' ');
+      const keywords = extractKeywords(textForExtraction, 6);
+
+      if (modalType === 'recipe') {
+        await recipesAPI.create({ keywords });
+      } else if (modalType === 'music') {
+        await musicAPI.create({ keywords });
+      } else if (modalType === 'tour') {
+        await toursAPI.create({ keywords });
+      } else if (modalType === 'craft') {
+        await craftsAPI.create({ keywords });
+      }
+      await refreshStats();
+      closeModal();
+      alert('Added successfully');
+    } catch (err) {
+      console.error('Add error', err);
+      setModalErr('Failed to add item');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  // Keyword extraction: simple frequency-based extractor removing stopwords
+  const extractKeywords = (text, topN = 5) => {
+    if (!text) return [];
+    const stopwords = new Set([
+      'the','and','a','an','of','in','on','for','with','to','from','by','at','is','it','this','that','these','those','as','be','are','was','were','or','but','if','then','so','its','your','you','i','we','they','he','she','him','her'
+    ]);
+    // normalize
+    const cleaned = text
+      .toLowerCase()
+      .replace(/[\.,\/#!$%\^&\*;:{}=\-_`~()\[\]"]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+    const words = cleaned.split(' ').map(w => w.trim()).filter(Boolean);
+    const freq = {};
+    for (const w of words) {
+      if (stopwords.has(w)) continue;
+      if (/^\d+$/.test(w)) continue; // skip pure numbers
+      freq[w] = (freq[w] || 0) + 1;
+    }
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).map(e => e[0]);
+    return Array.from(new Set(sorted)).slice(0, topN);
+  };
+
   const quickLinks = [
     {
       title: 'Food Recipes',
@@ -187,6 +275,57 @@ const Dashboard = () => {
                 Watch Tour
               </button>
             </div>
+            {/* Add/Edit Modal */}
+            {modalType && (
+              <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                <div className="bg-white rounded-lg w-full max-w-lg p-6">
+                  <h3 className="text-xl font-semibold mb-4">Add {modalType === 'recipe' ? 'Recipe' : modalType === 'music' ? 'Music Lesson' : modalType === 'tour' ? 'Tour' : 'Craft'}</h3>
+                  {modalErr && <div className="mb-3 text-sm text-red-600">{modalErr}</div>}
+                  <form onSubmit={handleModalSubmit}>
+                    <label className="block text-sm font-medium text-gray-700">Title</label>
+                    <input name="title" placeholder="Enter title" ref={modalTitleRef} value={modalForm.title} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" />
+
+                    <label className="block text-sm font-medium text-gray-700 mt-4">Description</label>
+                    <textarea name="description" placeholder="Enter a short description" value={modalForm.description} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" rows={4} />
+
+                    {modalType === 'recipe' && (
+                      <>
+                        <label className="block text-sm font-medium text-gray-700 mt-4">Ingredients (comma-separated)</label>
+                        <input name="extra" placeholder="eg. rice, salt, oil" value={modalForm.extra} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" />
+                      </>
+                    )}
+
+                    {modalType === 'music' && (
+                      <>
+                        <label className="block text-sm font-medium text-gray-700 mt-4">Level</label>
+                        <input name="extra" placeholder="Beginner/Intermediate/Advanced" value={modalForm.extra} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" />
+                      </>
+                    )}
+
+                    {modalType === 'tour' && (
+                      <>
+                        <label className="block text-sm font-medium text-gray-700 mt-4">Location</label>
+                        <input name="extra" placeholder="City / Village / Area" value={modalForm.extra} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" />
+                      </>
+                    )}
+
+                    {modalType === 'craft' && (
+                      <>
+                        <label className="block text-sm font-medium text-gray-700 mt-4">Price</label>
+                        <input name="extra" placeholder="0" value={modalForm.extra} onChange={handleModalChange} className="w-full mt-2 p-2 border rounded bg-black text-white placeholder-gray-400 border-gray-700" type="number" />
+                      </>
+                    )}
+
+                    <div className="mt-6 flex justify-end gap-3">
+                      <button type="button" onClick={closeModal} className="px-4 py-2 rounded border">Cancel</button>
+                      <button type="submit" disabled={modalLoading} className="px-4 py-2 rounded bg-primary-600 text-white">
+                        {modalLoading ? 'Saving...' : 'Save'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -266,7 +405,7 @@ const Dashboard = () => {
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Quick Actions</h2>
             <div className="space-y-4">
               <button
-                onClick={addSampleRecipe}
+                onClick={() => openModal('recipe')}
                 className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-center space-x-3">
@@ -282,7 +421,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={addSampleMusic}
+                onClick={() => openModal('music')}
                 className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-center space-x-3">
@@ -298,7 +437,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={addSampleTour}
+                onClick={() => openModal('tour')}
                 className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-center space-x-3">
@@ -314,7 +453,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                onClick={addSampleCraft}
+                onClick={() => openModal('craft')}
                 className="w-full flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex items-center space-x-3">
