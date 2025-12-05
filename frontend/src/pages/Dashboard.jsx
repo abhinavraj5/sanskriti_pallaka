@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FaUtensils, FaMusic, FaMapMarkedAlt, FaStore, FaPlus, FaRobot } from 'react-icons/fa';
+import { FaUtensils, FaMusic, FaMapMarkedAlt, FaStore, FaPlus } from 'react-icons/fa';
 import { recipesAPI, musicAPI, toursAPI, craftsAPI } from '../services/api';
 
 const Dashboard = () => {
@@ -456,26 +456,6 @@ const Dashboard = () => {
                 </div>
                 <FaPlus className="text-gray-400" />
               </button>
-
-              {/* Divider */}
-              <div className="border-t border-gray-200 my-4"></div>
-
-              {/* Ask Me Anything Button */}
-              <Link
-                to="/chatbot"
-                className="w-full flex items-center justify-between p-4 bg-gradient-to-br from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition transform hover:scale-105"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="p-2 bg-white/20 rounded-lg">
-                    <FaRobot className="text-lg" />
-                  </div>
-                  <div className="text-left">
-                    <h3 className="font-medium">Ask Me Anything</h3>
-                    <p className="text-sm text-indigo-100">Chat with AI</p>
-                  </div>
-                </div>
-                <span className="text-xl">→</span>
-              </Link>
             </div>
 
             {/* USER PROFILE CARD */}
@@ -508,6 +488,13 @@ const Dashboard = () => {
                   View Profile
                 </button>
               </div>
+            </div>
+
+            {/* Chat Button */}
+            <div className="mt-6">
+              <Link to="/chatbot" className="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg shadow hover:shadow-lg">
+                💬 Chat with Assistant
+              </Link>
             </div>
 
           </div>

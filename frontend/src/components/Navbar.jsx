@@ -8,7 +8,6 @@ export default function Navbar() {
 
   const isAuthenticated = localStorage.getItem("user") !== null;
 
-
   const handleSignOut = () => {
     localStorage.removeItem("user");
     window.location.href = "/";
@@ -32,7 +31,7 @@ export default function Navbar() {
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="py-5 bg-white/70 backdrop-blur-lg shadow-sm sticky top-0 z-50"
+      className="py-5 bg-white/10 backdrop-blur-3xl shadow-sm sticky top-0 z-50"
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
 
@@ -48,10 +47,10 @@ export default function Navbar() {
           </motion.div>
 
           <div>
-            <div className="text-xl font-semibold text-gray-900 tracking-wide">
+            <div className="text-xl font-semibold text-black tracking-wide">
               Sanskriti Pallaka
             </div>
-            <div className="text-xs text-gray-500">Arts • Music • Food • Travel</div>
+            <div className="text-xs text-black">Arts • Music • Food • Travel</div>
           </div>
         </Link>
 
@@ -62,7 +61,7 @@ export default function Navbar() {
               key={l.to}
               to={l.to}
               className={`relative text-sm font-medium transition 
-                ${loc.pathname === l.to ? "text-deepIndigo" : "text-gray-600 hover:text-deepIndigo"}
+                ${loc.pathname === l.to ? "text-black" : "text-black hover:text-gray-700"}
               `}
             >
               {l.label}
@@ -95,11 +94,9 @@ export default function Navbar() {
           )}
         </nav>
 
-        
-
         {/* MOBILE MENU BUTTON */}
         <button
-          className="md:hidden p-2 text-gray-700"
+          className="md:hidden p-2 text-black"
           onClick={() => setOpen(!open)}
         >
           ☰
@@ -112,14 +109,14 @@ export default function Navbar() {
         <motion.div
           initial={{ height: 0 }}
           animate={{ height: "auto" }}
-          className="md:hidden bg-white/90 backdrop-blur-lg shadow-inner px-6 py-4 space-y-3"
+          className="md:hidden bg-white/10 backdrop-blur-3xl shadow-inner px-6 py-4 space-y-3"
         >
           {links.map((l) => (
             <Link
               key={l.to}
               to={l.to}
               onClick={() => setOpen(false)}
-              className="block text-gray-700 font-medium py-2"
+              className="block text-black font-medium py-2"
             >
               {l.label}
             </Link>
