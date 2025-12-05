@@ -1,4 +1,7 @@
 import React from "react";
+import aboutMusic from "../assets/Pages/Aboutmusic.jpg";
+import aboutCraft from "../assets/Pages/Aboutcraft.jpg";
+import aboutFood from "../assets/Pages/Aboutfood.jpg";
 import { motion } from "framer-motion";
 
 export default function About() {
@@ -38,9 +41,9 @@ export default function About() {
             className="rounded-xl overflow-hidden shadow-lg"
           >
             <img
-              src="https://images.unsplash.com/photo-1582541476874-84a8c41f38a9"
+              src={aboutMusic}
               alt="Indian Classical Music"
-              className="w-full h-64 object-cover"
+              className="w-full h-64 md:h-80 lg:h-96 object-cover"
             />
           </motion.div>
 
@@ -51,9 +54,9 @@ export default function About() {
             className="rounded-xl overflow-hidden shadow-lg"
           >
             <img
-              src="https://images.unsplash.com/photo-1545156521-77bd3b17d37b"
+              src={aboutCraft}
               alt="Traditional Indian Craft"
-              className="w-full h-64 object-cover"
+              className="w-full h-64 md:h-80 lg:h-96 object-cover"
             />
           </motion.div>
 
@@ -64,9 +67,9 @@ export default function About() {
             className="rounded-xl overflow-hidden shadow-lg"
           >
             <img
-              src="https://images.unsplash.com/photo-1589308078058-fd7a5b39b967"
+              src={aboutFood}
               alt="Indian Street Food"
-              className="w-full h-64 object-cover"
+              className="w-full h-64 md:h-80 lg:h-96 object-cover"
             />
           </motion.div>
         </div>

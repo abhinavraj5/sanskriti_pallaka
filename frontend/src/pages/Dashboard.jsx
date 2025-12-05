@@ -188,7 +188,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       </div>
     );
   }
@@ -197,18 +197,18 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50">
 
       {/* HERO SECTION */}
-      <div className="bg-gradient-to-r from-primary-700 to-secondary-700 text-white">
+      <div className="bg-gradient-to-r from-indigo-700 to-pink-600 text-white">
         <div className="container mx-auto px-4 py-12">
           <div className="max-w-3xl">
             <h1 className="text-5xl font-bold mb-4">
               Welcome{user?.username ? `, ${user.username}` : ''}! 👋
             </h1>
-            <p className="text-xl text-primary-100 mb-6">
+            <p className="text-xl text-white/90 mb-6">
               Your personalized cultural hub. Share and manage your recipes, music lessons, tours, and traditional crafts.
             </p>
 
             <div className="flex flex-wrap gap-4">
-              <Link to="/food" className="bg-white text-primary-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold">
+              <Link to="/food" className="bg-white text-indigo-800 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold">
                 Explore Collections
               </Link>
               <button className="bg-transparent border-2 border-white hover:bg-white/10 px-6 py-3 rounded-lg font-semibold">
@@ -334,7 +334,7 @@ const Dashboard = () => {
                 <h3 className="text-lg font-semibold">{link.title}</h3>
                 <p className="text-sm text-gray-600 mb-4">{link.description}</p>
 
-                <Link to={link.path} className="inline-flex items-center text-primary-600 font-medium">
+                <Link to={link.path} className="inline-flex items-center text-indigo-600 font-medium">
                   Explore <FaPlus className="ml-2" />
                 </Link>
               </div>
@@ -380,7 +380,7 @@ const Dashboard = () => {
 
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm text-gray-500">Click to explore</span>
-                      <span className="text-primary-600">→</span>
+                      <span className="text-indigo-600">→</span>
                     </div>
                   </div>
                 </Link>
@@ -459,7 +459,7 @@ const Dashboard = () => {
             </div>
 
             {/* USER PROFILE CARD */}
-            <div className="mt-8 card bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl">
+            <div className="mt-8 card bg-gradient-to-r from-indigo-500 to-pink-500 text-white rounded-xl">
               <div className="p-6">
                 <h3 className="text-lg font-semibold mb-2">👤 Your Profile</h3>
 
@@ -484,7 +484,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <button className="w-full py-2 bg-white text-primary-800 rounded-lg hover:bg-gray-100">
+                <button className="w-full py-2 bg-white text-indigo-800 rounded-lg hover:bg-gray-100">
                   View Profile
                 </button>
               </div>

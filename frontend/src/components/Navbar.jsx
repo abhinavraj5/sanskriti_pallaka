@@ -18,7 +18,7 @@ export default function Navbar() {
     loc.pathname !== "/login" &&
     loc.pathname !== "/register";
 
-  const links = [
+  const baseLinks = [
     { to: "/", label: "Home" },
     { to: "/music", label: "Music" },
     { to: "/tours", label: "Tours" },
@@ -26,6 +26,12 @@ export default function Navbar() {
     { to: "/crafts", label: "Crafts" },
     { to: "/about", label: "About" },
   ];
+
+  // If authenticated show MyVerse (dashboard) in the main links so it
+  // uses the same text/font styling as other nav items.
+  const links = isAuthenticated
+    ? [{ to: "/dashboard", label: "MyVerse" }, ...baseLinks]
+    : baseLinks;
 
   return (
     <motion.header
@@ -74,15 +80,15 @@ export default function Navbar() {
             </Link>
           ))}
 
-          {showSignIn && (
+          {!isAuthenticated ? (
             <Link
               to="/login"
-              className="px-5 py-2 rounded-lg text-sm font-semibold text-white 
-                         bg-gradient-to-br from-deepIndigo to-redAccent shadow-md hover:opacity-90"
+              className="px-5 py-2 rounded-lg text-sm font-semibold text-white bg-red-600 hover:opacity-90"
             >
               Sign In
             </Link>
-          )}
+          ) : null}
+
 
           {isAuthenticated && (
             <button
@@ -125,7 +131,7 @@ export default function Navbar() {
           {showSignIn && (
             <Link
               to="/login"
-              className="block bg-deepIndigo text-white py-2 px-4 rounded-lg mt-3"
+              className="block bg-red-600 text-white py-2 px-4 rounded-lg mt-3"
             >
               Sign In
             </Link>
