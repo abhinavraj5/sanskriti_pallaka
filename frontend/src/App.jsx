@@ -21,6 +21,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Dashboard
 import Dashboard from "./pages/Dashboard";
 
+// Chatbot
+import Chatbot from "./pages/Chatbot";
+
 export default function App() {
   return (
     <Router>
@@ -46,6 +49,16 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Chatbot */}
+          <Route
+            path="/chatbot"
+            element={
+              <ProtectedRoute>
+                <Chatbot />
               </ProtectedRoute>
             }
           />

@@ -8,6 +8,7 @@ export default function Navbar() {
 
   const isAuthenticated = localStorage.getItem("user") !== null;
 
+
   const handleSignOut = () => {
     localStorage.removeItem("user");
     window.location.href = "/";
@@ -93,6 +94,8 @@ export default function Navbar() {
             </button>
           )}
         </nav>
+
+        
 
         {/* MOBILE MENU BUTTON */}
         <button
