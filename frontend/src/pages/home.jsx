@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import { motion } from "framer-motion";
 
 const sample = [
-  { title: "Classical Music", subtitle: "Live & recorded", color: "#EFE2BA" },
+  { title: "Modern Music", subtitle: "Live & recorded", color: "#EFE2BA" },
   { title: "Village Tours", subtitle: "Local guides & stories", color: "#D79922" },
   { title: "Street Food", subtitle: "Taste the traditions", color: "#F13C20" },
   { title: "Handicrafts", subtitle: "Buy handmade", color: "#4056A1" }
