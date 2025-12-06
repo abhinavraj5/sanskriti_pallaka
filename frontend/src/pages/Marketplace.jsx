@@ -144,7 +144,7 @@ const Marketplace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-100">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-700 text-white">
         <div className="container mx-auto px-4 py-12">
@@ -243,7 +243,7 @@ const Marketplace = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredCrafts.map((craft, index) => (
-                <div key={index} className="card bg-white hover:shadow-xl transition-all duration-300">
+                <div key={index} className="card bg-white/90 border border-amber-200 shadow-md hover:shadow-xl transition-all duration-300">
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div>

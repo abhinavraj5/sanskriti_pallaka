@@ -4,10 +4,18 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Card from "../components/Card";
 import { motion } from "framer-motion";
+
+// Background images
 import homeImg2 from "../assets/Pages/home2.png";
 import homeImg3 from "../assets/Pages/home3.png";
 
-import "./HomeUniverse.css";  // ⭐ NEW BACKGROUND
+// ⭐ NEW — Import card images
+import classicMusicImg from "../assets/Pages/classicmusic.jpg";
+import streetFoodImg from "../assets/Pages/street.png";
+import villageImg from "../assets/Pages/village.jpg";
+import handcraftImg from "../assets/Pages/handicraft.jpg";
+
+import "./HomeUniverse.css";
 
 const sample = [
   { title: "Classic Music", subtitle: "Live & recorded", color: "#EFE2BA" },
@@ -27,7 +35,6 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    // floating particles (like login but lighter)
     const generated = Array.from({ length: 25 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -48,7 +55,15 @@ export default function Home() {
     }
   };
 
-  /* Glass Block Styling */
+  // ⭐ Assign images based on title
+  const getImageForCard = (title) => {
+    if (title === "Classic Music") return classicMusicImg;
+    if (title === "Village Tours") return villageImg;
+    if (title === "Street Food") return streetFoodImg;
+    if (title === "Handicrafts") return handcraftImg;
+    return null;
+  };
+
   const glassBlock =
     "bg-white/50 backdrop-blur-2xl border border-white/40 shadow-xl rounded-3xl p-10 max-w-4xl mx-auto transition-all duration-300";
 
@@ -74,14 +89,7 @@ export default function Home() {
   return (
     <div className="home-universe relative overflow-hidden">
 
-      {/* Universe Background Elements */}
-      <div className="orb orb-1"></div>
-      <div className="orb orb-2"></div>
-      <div className="orb orb-3"></div>
-
-      <div className="mandala-home"></div>
-
-      {/* floating particles */}
+      {/* Floating particles */}
       <div className="home-particles">
         {particles.map((p) => (
           <div
@@ -98,7 +106,7 @@ export default function Home() {
         ))}
       </div>
 
-      {/* ========= 🌟 MAIN HOME PAGE CONTENT STARTS HERE 🌟 ========= */}
+      {/* CONTENT */}
       <div className="relative z-10 container mx-auto px-6 py-20">
 
         {/* HERO */}
@@ -123,11 +131,11 @@ export default function Home() {
           </motion.h1>
 
           <motion.p className="mt-4 text-white max-w-2xl mx-auto text-lg">
-            Discover India's music, crafts, food and travel experiences enriched by centuries of tradition.
+            Discover India's music, crafts, food, and travel experiences enriched by centuries of tradition.
           </motion.p>
         </motion.section>
 
-        {/* ⭐ START YOUR JOURNEY (Scroll Animation) */}
+        {/* START YOUR JOURNEY */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -157,116 +165,64 @@ export default function Home() {
               variants={{ hidden: { opacity: 0, y: 40 }, visible: { opacity: 1, y: 0 } }}
             >
               <Link to={getTarget(s.title)} onClick={(e) => handleClick(e, getTarget(s.title))}>
-                <Card title={s.title} subtitle={s.subtitle} color={s.color} />
+                <Card
+                  title={s.title}
+                  subtitle={s.subtitle}
+                  color={s.color}
+                  image={getImageForCard(s.title)}  // ⭐ AUTO IMAGE
+                />
               </Link>
             </motion.div>
           ))}
         </motion.section>
 
-        {/* ⭐ DESCRIPTION SECTIONS BELOW */}
-
-        {/* LIVING CIVILIZATION */}
+        {/* SECTIONS BELOW */}
         <Divider />
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          whileHover={hoverEffect}
-          className={glassBlock}
-        >
-          <h2 className="text-4xl font-merri font-semibold text-gray-900 mb-4 text-center">
-            India — A Living Civilization
-          </h2>
-          <p className="text-lg text-gray-800 leading-relaxed text-center">
-            India is a 5,000-year-old civilization where festivals, music, crafts,
-            languages and rituals still shape everyday life — a culture beautifully alive.
+
+        <motion.div variants={reveal} initial="hidden" whileInView="visible" className={glassBlock}>
+          <h2 className="text-4xl font-semibold text-gray-900 text-center mb-4">India — A Living Civilization</h2>
+          <p className="text-lg text-gray-800 text-center">
+            India is a 5,000-year-old civilization where festivals, music, crafts, languages, and rituals still shape everyday life.
           </p>
         </motion.div>
 
-        {/* NATURE */}
         <Divider />
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          whileHover={hoverEffect}
-          className={glassBlock}
-        >
-          <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            Nature Like Nowhere Else
-          </h3>
-          <p className="text-gray-800 leading-relaxed">
-            From Himalayan glaciers and tropical forests to sandy deserts and sacred rivers —
-            India's landscapes carry myths, wildlife and timeless stories.
+        <motion.div variants={reveal} initial="hidden" whileInView="visible" className={glassBlock}>
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">Nature Like Nowhere Else</h3>
+          <p className="text-gray-800">
+            From Himalayan glaciers to tropical forests — India's landscapes carry myths and wildlife.
           </p>
         </motion.div>
 
-        {/* FOOD */}
         <Divider />
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          whileHover={hoverEffect}
-          className={glassBlock}
-        >
+        <motion.div variants={reveal} initial="hidden" whileInView="visible" className={glassBlock}>
           <h3 className="text-3xl font-bold text-gray-900 mb-4">A Universe of Flavors</h3>
-          <p className="text-gray-800 leading-relaxed">
-            Indian cuisine is not one — but thousands of cuisines. Each region carries spices,
-            traditions and recipes preserved through generations.
+          <p className="text-gray-800">
+            Indian cuisine is thousands of cuisines — each region carrying spices and traditions.
           </p>
         </motion.div>
 
-        {/* ART */}
         <Divider />
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          whileHover={hoverEffect}
-          className={glassBlock}
-        >
+        <motion.div variants={reveal} initial="hidden" whileInView="visible" className={glassBlock}>
           <h3 className="text-3xl font-bold text-gray-900 mb-4">Art That Breathes History</h3>
-          <p className="text-gray-800 leading-relaxed">
-            Classical dances, paintings, crafts and monuments — every Indian art form
-            carries devotion, stories and the essence of dynasties.
+          <p className="text-gray-800">
+            Classical dances, paintings, crafts, and monuments carry devotion and deep heritage.
           </p>
         </motion.div>
 
-        {/* SPIRITUALITY */}
         <Divider />
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          whileHover={hoverEffect}
-          className={`${glassBlock} mb-20`}
-        >
-          <h3 className="text-3xl font-bold text-gray-900 mb-4">
-            Land of Spirituality
-          </h3>
-          <p className="text-gray-800 leading-relaxed">
-            India is the birthplace of profound philosophies — Hinduism, Buddhism, Jainism
-            and Sikhism — all rooted in meditation, balance and self-realization.
+        <motion.div variants={reveal} initial="hidden" whileInView="visible" className={`${glassBlock} mb-20`}>
+          <h3 className="text-3xl font-bold text-gray-900 mb-4">Land of Spirituality</h3>
+          <p className="text-gray-800">
+            India is the birthplace of philosophies rooted in meditation, balance, and self-realization.
           </p>
         </motion.div>
 
         {/* FOOTER */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          className="text-center text-white/80 mt-12"
-        >
+        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-center text-white/80 mt-12">
           Handcrafted with ❤️ to honor India's living heritage.
         </motion.p>
-
       </div>
-      {/* ========= 🌟 MAIN CONTENT END 🌟 ========= */}
     </div>
   );
 }
