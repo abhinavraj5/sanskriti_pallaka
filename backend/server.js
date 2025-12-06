@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -30,6 +31,9 @@ app.use('/api/music', musicRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/food-recipes', foodRecipeRoutes);
 
+// Serve uploaded files (scanner images, etc.)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(async () => {
@@ -51,7 +55,22 @@ mongoose
       console.error('Auto-seed error:', seedErr.message || seedErr);
     }
 
-    const port = process.env.PORT || 5000;
+    // Auto-seed crafts if none exist
+    try {
+      const Craft = require('./models/Craft');
+      const craftsSeed = require('./data/craftsSeed');
+      const craftCount = await Craft.countDocuments();
+      if (craftCount === 0) {
+        await Craft.insertMany(craftsSeed);
+        console.log('Auto-seeded crafts');
+      } else {
+        console.log(`Crafts already present: ${craftCount}`);
+      }
+    } catch (seedErr) {
+      console.error('Craft auto-seed error:', seedErr.message || seedErr);
+    }
+
+    const port = process.env.PORT || 5001;
     app.listen(port, () => console.log(`Server running on port ${port}`));
   })
   .catch(err => console.error('MongoDB error:', err));

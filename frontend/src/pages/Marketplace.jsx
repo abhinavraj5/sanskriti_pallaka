@@ -6,11 +6,19 @@ import { FaStore, FaPlus, FaFilter, FaSearch, FaShoppingCart } from 'react-icons
 
 const Marketplace = () => {
   const [crafts, setCrafts] = useState([]);
+  const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [selectedState, setSelectedState] = useState('all');
+  const [showSellModal, setShowSellModal] = useState(false);
+  const [sellForm, setSellForm] = useState({ title: '', description: '', price: '', originState: '', paymentScanner: '', imageUrl: '' });
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [selectedCraft, setSelectedCraft] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState('all');
   const [cart, setCart] = useState([]);
+  const [view, setView] = useState('browse'); // 'browse' | 'mine'
+  const [sellErrors, setSellErrors] = useState({});
 
   useEffect(() => {
     fetchCrafts();
@@ -19,8 +27,16 @@ const Marketplace = () => {
   const fetchCrafts = async () => {
     try {
       setLoading(true);
-      const response = await craftsAPI.getAll();
-      setCrafts(response.data || []);
+      const params = {};
+      if (selectedState && selectedState !== 'all') params.state = selectedState;
+      if (view === 'mine') params.mine = 'true';
+      const response = await craftsAPI.getAll(params);
+      const list = response.data || [];
+      setCrafts(list);
+
+      // derive unique states list for selector
+      const uniqueStates = Array.from(new Set(list.map(c => c.originState || c.origin).filter(Boolean)));
+      setStates(uniqueStates);
     } catch (err) {
       setError('Failed to load crafts');
       console.error(err);
@@ -29,9 +45,85 @@ const Marketplace = () => {
     }
   };
 
+  // refetch when selectedState or view changes
+  useEffect(() => {
+    fetchCrafts();
+  }, [selectedState, view]);
+
   const addToCart = (craft) => {
     setCart([...cart, craft]);
     alert(`${craft.title || 'Item'} added to cart!`);
+  };
+
+  const openBuyModal = (craft) => {
+    setSelectedCraft(craft);
+    setShowBuyModal(true);
+  };
+
+  const handleSellChange = (e) => setSellForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const [uploadingScanner, setUploadingScanner] = useState(false);
+  const [scannerPreview, setScannerPreview] = useState(null);
+
+  const handleScannerFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    // preview
+    const reader = new FileReader();
+    reader.onload = () => setScannerPreview(reader.result);
+    reader.readAsDataURL(file);
+
+    // upload
+    try {
+      setUploadingScanner(true);
+      const fd = new FormData();
+      fd.append('scanner', file);
+      const res = await craftsAPI.uploadScanner(fd);
+      if (res && res.data && res.data.url) {
+        setSellForm(f => ({ ...f, paymentScanner: res.data.url }));
+      }
+    } catch (err) {
+      console.error('Upload failed', err);
+      alert('Failed to upload scanner image');
+    } finally {
+      setUploadingScanner(false);
+    }
+  };
+
+  const submitSell = async () => {
+    // validate
+    const errors = {};
+    if (!sellForm.title || sellForm.title.trim().length < 3) errors.title = 'Title must be at least 3 characters';
+    if (!sellForm.description || sellForm.description.trim().length < 10) errors.description = 'Enter a more detailed description (10+ chars)';
+    if (!sellForm.price || isNaN(parseFloat(sellForm.price)) || parseFloat(sellForm.price) <= 0) errors.price = 'Enter a valid price';
+    if (!sellForm.originState || sellForm.originState.trim().length < 2) errors.originState = 'Provide the origin state';
+    setSellErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+
+    try {
+      const payload = {
+        title: sellForm.title,
+        description: sellForm.description,
+        price: parseFloat(sellForm.price) || 0,
+        originState: sellForm.originState,
+        paymentScanner: sellForm.paymentScanner,
+        imageUrl: sellForm.imageUrl
+      };
+      await craftsAPI.create(payload);
+      setShowSellModal(false);
+      setSellForm({ title: '', description: '', price: '', originState: '', paymentScanner: '', imageUrl: '' });
+      setSellErrors({});
+      // show user's listing
+      setView('mine');
+      fetchCrafts();
+      alert('Your product was added to the marketplace');
+    } catch (err) {
+      console.error('Failed to create product', err);
+      if (err.response && err.response.status === 401) {
+        alert('You must be logged in to sell. Please login and try again.');
+      } else {
+        alert('Failed to add product. Try again later.');
+      }
+    }
   };
 
   const filteredCrafts = crafts.filter(craft => {
@@ -53,7 +145,7 @@ const Marketplace = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-amber-600 to-orange-700 text-white">
         <div className="container mx-auto px-4 py-12">
@@ -108,11 +200,16 @@ const Marketplace = () => {
                   ))}
                 </select>
               </div>
-              
-              <button className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2 transition-colors duration-200">
-                <FaPlus />
-                <span>Sell Craft</span>
-              </button>
+              <div className="flex items-center space-x-3">
+                <div className="rounded-lg bg-gray-100 p-1 flex items-center">
+                  <button onClick={() => setView('browse')} className={`px-3 py-2 rounded ${view === 'browse' ? 'bg-amber-600 text-white' : 'text-gray-700'}`}>Browse</button>
+                  <button onClick={() => setView('mine')} className={`px-3 py-2 rounded ${view === 'mine' ? 'bg-amber-600 text-white' : 'text-gray-700'}`}>Your Selling</button>
+                </div>
+                <button onClick={() => { setShowSellModal(true); setSellErrors({}); }} className="bg-amber-600 hover:bg-amber-700 text-white px-6 py-3 rounded-lg font-semibold flex items-center space-x-2 transition-colors duration-200">
+                  <FaPlus />
+                  <span>Sell Craft</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -147,15 +244,15 @@ const Marketplace = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredCrafts.map((craft, index) => (
-                <div key={index} className="card hover:shadow-xl transition-all duration-300">
+                <div key={index} className="card bg-white hover:shadow-xl transition-all duration-300">
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-xl font-semibold text-gray-800">
-                          {craft.title || 'Untitled Craft'}
+                          {craft.title || craft.name || 'Untitled Craft'}
                         </h3>
-                        {craft.artist && (
-                          <p className="text-gray-600 text-sm mt-1">by {craft.artist}</p>
+                        { (craft.artist || craft.artisan) && (
+                          <p className="text-gray-600 text-sm mt-1">by {craft.artist || craft.artisan}</p>
                         )}
                       </div>
                       {craft.price && (
@@ -197,6 +294,12 @@ const Marketplace = () => {
                       >
                         <FaShoppingCart />
                         <span>Add to Cart</span>
+                      </button>
+                      <button
+                        onClick={() => openBuyModal(craft)}
+                        className="ml-3 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg font-medium transition-colors duration-200"
+                      >
+                        Buy
                       </button>
                     </div>
                   </div>
@@ -287,6 +390,75 @@ const Marketplace = () => {
             <button className="w-full mt-4 bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-lg font-semibold transition-colors duration-200">
               Checkout Now
             </button>
+          </div>
+        )}
+        {/* Sell Modal */}
+        {showSellModal && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg p-6 w-full max-w-xl">
+              <h3 className="text-xl font-semibold mb-4">Sell Your Unique Thing</h3>
+              <div className="space-y-3">
+                  <div>
+                    <input name="title" value={sellForm.title} onChange={handleSellChange} placeholder="Title" className="w-full border px-3 py-2 rounded" />
+                    {sellErrors.title && <div className="text-sm text-red-600 mt-1">{sellErrors.title}</div>}
+                  </div>
+                  <div>
+                    <textarea name="description" value={sellForm.description} onChange={handleSellChange} placeholder="Description" className="w-full border px-3 py-2 rounded" />
+                    {sellErrors.description && <div className="text-sm text-red-600 mt-1">{sellErrors.description}</div>}
+                  </div>
+                  <div>
+                    <input name="price" value={sellForm.price} onChange={handleSellChange} placeholder="Price" className="w-full border px-3 py-2 rounded" />
+                    {sellErrors.price && <div className="text-sm text-red-600 mt-1">{sellErrors.price}</div>}
+                  </div>
+                  <div>
+                    <input name="originState" value={sellForm.originState} onChange={handleSellChange} placeholder="State (e.g., Rajasthan)" className="w-full border px-3 py-2 rounded" />
+                    {sellErrors.originState && <div className="text-sm text-red-600 mt-1">{sellErrors.originState}</div>}
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Upload Scanner Photo (payment)</label>
+                    <input type="file" accept="image/*" onChange={handleScannerFile} className="w-full" />
+                    {uploadingScanner && <div className="text-sm text-gray-500 mt-1">Uploading...</div>}
+                    {scannerPreview && (
+                      <div className="mt-2">
+                        <img src={scannerPreview} alt="preview" className="w-28 h-28 object-cover rounded border" />
+                      </div>
+                    )}
+                  </div>
+                  <div>
+                    <input name="imageUrl" value={sellForm.imageUrl} onChange={handleSellChange} placeholder="Image URL (optional)" className="w-full border px-3 py-2 rounded" />
+                  </div>
+                  <div className="flex justify-end gap-3">
+                    <button onClick={() => setShowSellModal(false)} className="px-4 py-2 rounded border">Cancel</button>
+                    <button onClick={submitSell} className="px-4 py-2 rounded bg-amber-600 text-white">Add Product</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Buy Modal */}
+        {showBuyModal && selectedCraft && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h3 className="text-xl font-semibold mb-2">Pay to {selectedCraft.artist || selectedCraft.artisan || 'Artist'}</h3>
+              <p className="text-gray-700 mb-4">{selectedCraft.title || selectedCraft.name}</p>
+              <p className="text-sm text-gray-600 mb-4">{selectedCraft.description}</p>
+              {selectedCraft.paymentScanner ? (
+                <div className="text-center">
+                  {selectedCraft.paymentScanner.startsWith('http') ? (
+                    <img alt="Scanner" src={selectedCraft.paymentScanner} className="mx-auto w-40 h-40 object-contain rounded" />
+                  ) : (
+                    <img alt="QR" src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(selectedCraft.paymentScanner)}`} />
+                  )}
+                  <p className="text-sm text-gray-500 mt-2">Payment: <span className="font-medium">{selectedCraft.paymentScanner}</span></p>
+                </div>
+              ) : (
+                <p className="text-gray-500">No payment scanner available for this artist.</p>
+              )}
+              <div className="flex justify-end gap-3 mt-6">
+                <button onClick={() => setShowBuyModal(false)} className="px-4 py-2 rounded border">Close</button>
+              </div>
+            </div>
           </div>
         )}
       </div>

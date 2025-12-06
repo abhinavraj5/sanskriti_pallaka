@@ -3,11 +3,18 @@ const mongoose = require('mongoose');
 const craftSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   name: String,
+  title: String,
   description: String,
   artisan: String,
+  artist: String,
   price: Number,
   originCity: String,
-  originState: String
+  originState: String,
+  origin: String,
+  category: String,
+  material: String,
+  imageUrl: String,
+  paymentScanner: String
 });
 
 // Add keywords and createdAt for keyword-only storage

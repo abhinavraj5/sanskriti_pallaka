@@ -23,6 +23,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 // Dashboard
 import Dashboard from "./pages/Dashboard";
 import Chatbot from "./pages/Chatbot";
+import YourSelling from "./pages/YourSelling";
 
 export default function App() {
   return (
@@ -51,6 +52,15 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/your-selling"
+            element={
+              <ProtectedRoute>
+                <YourSelling />
               </ProtectedRoute>
             }
           />
