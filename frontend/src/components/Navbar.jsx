@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
+// ⭐ IMPORT YOUR LOGO
+import logoImg from "../assets/logo.png";
+
+
 export default function Navbar() {
   const loc = useLocation();
   const [open, setOpen] = useState(false);
@@ -28,10 +32,12 @@ export default function Navbar() {
     { to: "/about", label: "About" },
   ];
 
-  // If authenticated show MyVerse (dashboard) in the main links so it
-  // uses the same text/font styling as other nav items.
   const links = isAuthenticated
-    ? [{ to: "/dashboard", label: "MyVerse" }, { to: "/your-selling", label: "Your Selling" }, ...baseLinks]
+    ? [
+        { to: "/dashboard", label: "MyVerse" },
+        { to: "/your-selling", label: "Your Selling" },
+        ...baseLinks,
+      ]
     : baseLinks;
 
   return (
@@ -42,16 +48,15 @@ export default function Navbar() {
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
 
-        {/* LOGO */}
+        {/* ⭐ LOGO ADDED HERE ⭐ */}
         <Link to="/" className="flex items-center gap-3">
-          <motion.div
+          <motion.img
+            src={logoImg}
+            alt="Logo"
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="w-12 h-12 rounded-xl bg-gradient-to-br from-deepIndigo to-redAccent 
-                       flex items-center justify-center text-white font-bold text-lg shadow-md"
-          >
-            SP
-          </motion.div>
+            className="w-12 h-12 rounded-xl object-cover shadow-md"
+          />
 
           <div>
             <div className="text-xl font-semibold text-black tracking-wide">
@@ -90,7 +95,6 @@ export default function Navbar() {
             </Link>
           ) : null}
 
-
           {isAuthenticated && (
             <button
               onClick={handleSignOut}
@@ -108,7 +112,6 @@ export default function Navbar() {
         >
           ☰
         </button>
-
       </div>
 
       {/* MOBILE DROPDOWN */}

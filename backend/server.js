@@ -70,7 +70,7 @@ mongoose
       console.error('Craft auto-seed error:', seedErr.message || seedErr);
     }
 
-    const port = process.env.PORT || 5001;
+    const port = process.env.PORT || 3001;
     app.listen(port, () => console.log(`Server running on port ${port}`));
   })
   .catch(err => console.error('MongoDB error:', err));
