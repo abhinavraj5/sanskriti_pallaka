@@ -30,7 +30,7 @@ export default function Navbar() {
   // If authenticated show MyVerse (dashboard) in the main links so it
   // uses the same text/font styling as other nav items.
   const links = isAuthenticated
-    ? [{ to: "/dashboard", label: "MyVerse" }, ...baseLinks]
+    ? [{ to: "/dashboard", label: "MyVerse" }, { to: "/your-selling", label: "Your Selling" }, ...baseLinks]
     : baseLinks;
 
   return (
