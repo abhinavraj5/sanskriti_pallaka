@@ -54,6 +54,8 @@ export const foodRecipesAPI = {
   getPersonalizedRecipes: () => api.get('/food-recipes/my-recipes'),
   createPersonalizedRecipe: (recipeData) => api.post('/food-recipes/my-recipes', recipeData),
   deletePersonalizedRecipe: (id) => api.delete(`/food-recipes/my-recipes/${id}`),
+  likeStateRecipe: (id) => api.post(`/food-recipes/state-recipes/${id}/like`),
+  likePersonalizedRecipe: (id) => api.post(`/food-recipes/my-recipes/${id}/like`),
 };
 
 // Tours API

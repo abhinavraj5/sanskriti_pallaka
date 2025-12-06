@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { foodRecipesAPI } from '../services/api';
-import { FaTrash, FaPlus, FaPlay } from 'react-icons/fa';
+import { FaTrash, FaPlus, FaPlay, FaHeart } from 'react-icons/fa';
 
 const FoodRecipes = () => {
   const [stateRecipes, setStateRecipes] = useState([]);
@@ -68,7 +68,40 @@ const FoodRecipes = () => {
       setShowAddForm(false);
       await fetchRecipes();
     } catch (err) {
-      setError('Failed to add recipe: ' + (err.response?.data?.error || err.message));
+      // If server indicates duplicate description, show friendlier message
+      if (err.response?.status === 409) {
+        setError(err.response.data?.error || 'This recipe already exists');
+      } else {
+        setError('Failed to add recipe: ' + (err.response?.data?.error || err.message));
+      }
+    }
+  };
+
+  const handleLikeState = async (id) => {
+    if (!user?.token) {
+      setError('Please login to like recipes');
+      return;
+    }
+
+    try {
+      await foodRecipesAPI.likeStateRecipe(id);
+      await fetchRecipes();
+    } catch (err) {
+      setError('Failed to like recipe: ' + (err.response?.data?.error || err.message));
+    }
+  };
+
+  const handleLikePersonal = async (id) => {
+    if (!user?.token) {
+      setError('Please login to like recipes');
+      return;
+    }
+
+    try {
+      await foodRecipesAPI.likePersonalizedRecipe(id);
+      await fetchRecipes();
+    } catch (err) {
+      setError('Failed to like recipe: ' + (err.response?.data?.error || err.message));
     }
   };
 
@@ -133,15 +166,21 @@ const FoodRecipes = () => {
                         <td className="px-6 py-4 font-semibold text-gray-800">{recipe.foodName}</td>
                         <td className="px-6 py-4 text-gray-600 text-sm max-w-md">{recipe.description}</td>
                         <td className="px-6 py-4 text-center">
-                          <a
-                            href={recipe.videoLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors font-medium"
-                          >
-                            <FaPlay size={14} />
-                            Watch
-                          </a>
+                          <div className="flex items-center justify-center gap-3">
+                            <button onClick={() => handleLikeState(recipe._id)} className="flex items-center gap-2 text-sm text-rose-600 hover:opacity-80">
+                              <FaHeart />
+                              <span>{recipe.likes || 0}</span>
+                            </button>
+                            <a
+                              href={recipe.videoLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors font-medium"
+                            >
+                              <FaPlay size={14} />
+                              Watch
+                            </a>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -233,13 +272,22 @@ const FoodRecipes = () => {
           )}
 
           {/* Personalized Recipes List */}
-          {user?.token ? (
-            personalizedRecipes.length > 0 ? (
+            {user?.token ? (
+              personalizedRecipes.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {personalizedRecipes.map((recipe) => (
+                {personalizedRecipes.map((recipe, idx) => (
                   <div key={recipe._id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                    <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-16 flex items-center justify-center">
-                      <h3 className="text-lg font-bold text-white text-center px-4">{recipe.title}</h3>
+                    <div className="bg-gradient-to-r from-amber-500 to-orange-500 h-16 flex items-center justify-between px-4">
+                      <h3 className="text-lg font-bold text-white text-left">{recipe.title}</h3>
+                      <div className="flex items-center gap-3">
+                        {idx === 0 && recipe.likes > 0 && (
+                          <span className="bg-green-600 text-white text-xs px-2 py-1 rounded">Recommended</span>
+                        )}
+                        <button onClick={() => handleLikePersonal(recipe._id)} className="text-rose-600 flex items-center gap-1">
+                          <FaHeart />
+                          <span className="text-white text-sm bg-white/20 px-2 py-0.5 rounded">{recipe.likes || 0}</span>
+                        </button>
+                      </div>
                     </div>
                     <div className="p-6">
                       {recipe.region && (
