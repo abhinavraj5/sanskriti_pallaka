@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Card from '../components/Card';
 import { craftsAPI } from '../services/api';
+import stateCrafts from '../data/stateCrafts';
 import { FaStore, FaPlus, FaFilter, FaSearch, FaShoppingCart } from 'react-icons/fa';
 
 const Marketplace = () => {
@@ -307,6 +308,34 @@ const Marketplace = () => {
             </div>
           </>
         )}
+
+        {/* State-wise Crafts */}
+        <div className="mt-12">
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">State-wise Crafts</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {stateCrafts.map((s, i) => (
+              <div key={i} className="bg-white rounded-xl shadow p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-800">{s.state}</h3>
+                    <p className="text-sm text-gray-500">Demo Artist: {s.demoArtist}</p>
+                  </div>
+                </div>
+                <div className="mt-2 space-y-2">
+                  {s.crafts.slice(0, 6).map((c, idx) => (
+                    <div key={idx} className="text-sm">
+                      <strong className="text-gray-800">{c.name}</strong>
+                      <div className="text-gray-600">{c.description}</div>
+                    </div>
+                  ))}
+                  {s.crafts.length > 6 && (
+                    <div className="text-xs text-amber-600 mt-2">+{s.crafts.length - 6} more</div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Featured Categories */}
         <div className="mt-16">
