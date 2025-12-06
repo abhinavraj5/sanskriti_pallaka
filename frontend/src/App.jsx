@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Music from "./pages/Music";
 import Crafts from "./pages/Crafts";
 import Food from "./pages/Food";
+import FoodRecipes from "./pages/FoodRecipes";
 import Tours from "./pages/Tours";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/music" element={<Music />} />
           <Route path="/crafts" element={<Crafts />} />
           <Route path="/food" element={<Food />} />
+          <Route path="/food-recipes" element={<FoodRecipes />} />
           <Route path="/tours" element={<Tours />} />
 
           {/* Auth Pages */}

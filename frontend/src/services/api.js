@@ -46,6 +46,14 @@ export const recipesAPI = {
   create: (recipeData) => api.post('/recipes', recipeData),
 };
 
+// Food Recipes API
+export const foodRecipesAPI = {
+  getStateRecipes: () => api.get('/food-recipes/state-recipes'),
+  getPersonalizedRecipes: () => api.get('/food-recipes/my-recipes'),
+  createPersonalizedRecipe: (recipeData) => api.post('/food-recipes/my-recipes', recipeData),
+  deletePersonalizedRecipe: (id) => api.delete(`/food-recipes/my-recipes/${id}`),
+};
+
 // Tours API
 export const toursAPI = {
   getAll: () => api.get('/tours'),

@@ -155,7 +155,7 @@ const Dashboard = () => {
       title: 'Food Recipes',
       description: 'Explore traditional recipes',
       icon: <FaUtensils className="text-3xl text-green-600" />,
-      path: '/food',
+      path: '/food-recipes',
       count: stats.recipes,
       color: 'bg-green-50'
     },
