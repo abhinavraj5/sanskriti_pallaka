@@ -6,88 +6,89 @@ import DetailModal from "../components/DetailModal";
 export default function Tours() {
   const [active, setActive] = useState(null);
 
-  const tours = [
-    {
-      title: "Village Trails",
-      subtitle: "Walks & local stories",
-      color: "#D79922",
-      img: null,
-      description:
-`Village Trails invite you to wander lanes where time moves gently. Local guides—artisans, farmers, elders—share stories of festivals, old crafts, and daily life. These walks reveal traditional houses, courtyard kitchens, and small temples; they are intimate lessons in living heritage. A traveler returns with memories of warm smiles, shared meals, and a deep sense of place.`
-    },
-    {
-      title: "Temple Tours",
-      subtitle: "Architectural & spiritual gems",
-      color: "#EFE2BA",
-      img: null,
-      description:
-`Temple Tours explore architectural masterpieces from different eras: carved stone sanctuaries, frescoed chambers, and sunlit courtyards. More than monuments, temples are living spaces where ritual, music, and devotion continue. A guided temple tour opens doors to legend, iconography and the devotional life of a community.`
-    },
-    {
-      title: "Nature Walks",
-      subtitle: "Forest paths & birding",
-      color: "#7FB069",
-      img: null,
-      description:
-`Nature Walks take you away from bustle into shaded trails, wetlands and bird-rich landscapes. Local naturalists point out medicinal plants, migratory birds, and seasonal blossoms. These tours are slow, observant, and deeply restorative.`
-    },
-    {
-      title: "Crafts Village Visits",
-      subtitle: "Meet artisans & workshops",
-      color: "#A66CFF",
-      img: null,
-      description:
-`Visit workshops where weaving, pottery, metalwork and painting are practiced daily. You meet the hands that shape tradition, watch step-by-step processes, and sometimes try the craft yourself. These visits build empathy and directly support local livelihoods.`
-    },
-    {
-      title: "Culinary Trails",
-      subtitle: "Food walks & cooking classes",
-      color: "#E76F51",
-      img: null,
-      description:
-`Culinary Trails pair street bites with home-cooked meals. Learn how regional spices create distinct flavors, join a cooking class in a local house, and taste the cultural stories simmering in every pot.`
-    },
-    {
-      title: "Heritage Rides",
-      subtitle: "Cycle or bullock cart routes",
-      color: "#2E8B57",
-      img: null,
-      description:
-`Heritage Rides are slow, sensory journeys — on bicycle lanes or in bullock carts — through paddy fields, small shrines and roadside temples. They are immersive, tactile and deeply local.`
-    },
-    {
-      title: "Festival Experiences",
-      subtitle: "Join local celebrations",
-      color: "#F4A261",
-      img: null,
-      description:
-`Festival Experiences let you witness seasonal rituals, processions and communal feasts. With local hosts, you can watch, participate and understand the deeper cultural meanings behind each celebration.`
-    },
-    {
-      title: "River Journeys",
-      subtitle: "Boat-based cultural travel",
-      color: "#1E90FF",
-      img: null,
-      description:
-`River Journeys drift along waterways where villages, rituals and livelihoods cluster. From sunrise prayers on ghats to boatmen songs at dusk, river travel offers a slow and poetic way to see daily life unfold.`
-    },
-    {
-      title: "Tribal Trails",
-      subtitle: "Meet indigenous communities",
-      color: "#8E6E53",
-      img: null,
-      description:
-`Tribal Trails introduce travelers to indigenous cultures, their music, dance, and craft traditions. These respectful visits emphasize cultural exchange, not voyeurism — always arranged with community consent.`
-    },
-    {
-      title: "Historical Walks",
-      subtitle: "Colonial & pre-colonial sites",
-      color: "#9A6324",
-      img: null,
-      description:
-`Historical Walks reveal layers of time — fort walls, trading posts, colonial offices and archaeological ruins. Guides weave political, social and human stories into the stones, making the past vividly present.`
-    }
-  ];
+const tours = [
+  {
+    title: "Hampi Ruins",
+    subtitle: "Ancient Vijayanagara treasure",
+    color: "#D79922",
+    img: null,
+    description: 
+`Hampi is a surreal landscape of boulders, broken temple towers, musical pillars, and forgotten palaces. Once the capital of the Vijayanagara empire, it still whispers stories of kings, dancers, musicians, and merchants from centuries past. Walking through Hampi feels like wandering through a living epic — quiet, spiritual, timeless.`
+  },
+  {
+    title: "Majuli Island",
+    subtitle: "World’s largest river island",
+    color: "#EFE2BA",
+    img: null,
+    description:
+`Majuli in Assam is a floating world of satras, mask-making traditions, folk music, and warm monk communities. Its culture is untouched, its pace gentle, and its nature serene. Majuli shows how spirituality and nature coexist beautifully on the Brahmaputra River.`
+  },
+  {
+    title: "Gokarna Trails",
+    subtitle: "Coastal peace & cliff walks",
+    color: "#7FB069",
+    img: null,
+    description:
+`Gokarna remains a quiet alternative to Goa — with forested cliffs, empty beaches, temple lore, and slow village life. Sunset trails along Kudle and Om Beach reveal dramatic coastlines, fishermen at work, and an unhurried rhythm no city can offer.`
+  },
+  {
+    title: "Bhimbetka Caves",
+    subtitle: "Prehistoric rock paintings",
+    color: "#A66CFF",
+    img: null,
+    description:
+`Bhimbetka is a UNESCO site where ancient humans left their stories painted on cave walls. Wildlife scenes, dances, rituals, weapons, and daily life — all preserved for over 30,000 years. These caves are India’s oldest art gallery, echoing the creativity of our earliest ancestors.`
+  },
+  {
+    title: "Chettinad Mansions",
+    subtitle: "Palatial artisan homes",
+    color: "#E76F51",
+    img: null,
+    description:
+`Chettinad is a forgotten world of mansions built with Burma teak, Italian marble, Athangudi tiles, and meticulous craftsmanship. Every home reflects luxury, tradition, and incredible attention to detail. Exploring Chettinad is like opening a treasure chest of architectural heritage.`
+  },
+  {
+    title: "Spiti Villages",
+    subtitle: "Monasteries & moonlike deserts",
+    color: "#2E8B57",
+    img: null,
+    description:
+`Spiti’s remote villages — Langza, Komic, Dhankar — show Himalayan life untouched by modern noise. Ancient monasteries, fossil-filled hills, star-filled skies, and warm homestays create an experience that feels both spiritual and otherworldly.`
+  },
+  {
+    title: "Chilika Backwaters",
+    subtitle: "Flamingos & island life",
+    color: "#F4A261",
+    img: null,
+    description:
+`Chilika Lake is Asia’s largest brackish lagoon, home to dolphins, migratory birds, and tiny fishing islands. Visitors explore calm waters, floating villages, and vibrant bird colonies — a quiet world painted in soft blues and pinks.`
+  },
+  {
+    title: "Ziro Valley",
+    subtitle: "Tribal music & rice fields",
+    color: "#1E90FF",
+    img: null,
+    description:
+`Ziro Valley is famous for its Apatani tribal culture, bamboo houses, terraced rice fields, and India’s most soulful music festival. Time slows here — people live gently, harmoniously, and creatively amidst endless green.`
+  },
+  {
+    title: "Chaukhamba Meadows",
+    subtitle: "Untouched alpine paradise",
+    color: "#8E6E53",
+    img: null,
+    description:
+`These pristine Himalayan meadows remain one of India’s least explored trekking gems. Wildflowers, crystal streams, snowy peaks, and total silence — a place where nature feels raw, sacred, and vast.`
+  },
+  {
+    title: "Velas Village",
+    subtitle: "Turtle conservation & coastal life",
+    color: "#9A6324",
+    img: null,
+    description:
+`Velas is a small Konkani village where community members protect Olive Ridley turtles. During hatching season, baby turtles crawl towards the sea at sunrise — a breathtaking moment showing harmony between humans and nature.`
+  }
+];
+
 
   return (
     <div className="min-h-screen bg-[#faf4e6] py-16">
