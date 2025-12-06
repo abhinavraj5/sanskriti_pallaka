@@ -13,6 +13,7 @@ import Crafts from "./pages/Crafts";
 import Food from "./pages/Food";
 import FoodRecipes from "./pages/FoodRecipes";
 import Tours from "./pages/Tours";
+import Marketplace from "./pages/Marketplace";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/crafts" element={<Crafts />} />
           <Route path="/food" element={<Food />} />
           <Route path="/food-recipes" element={<FoodRecipes />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/tours" element={<Tours />} />
 
           {/* Auth Pages */}

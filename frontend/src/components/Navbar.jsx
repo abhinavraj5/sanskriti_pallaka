@@ -24,6 +24,7 @@ export default function Navbar() {
     { to: "/tours", label: "Tours" },
     { to: "/food", label: "Food" },
     { to: "/crafts", label: "Crafts" },
+    { to: "/marketplace", label: "Marketplace" },
     { to: "/about", label: "About" },
   ];
 
